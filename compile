@@ -11,6 +11,7 @@ cat output/js/BindIt.js >> output/bindit.js
 cat output/js/EventDispatcher.js >> output/bindit.js
 cat output/js/Model.js >> output/bindit.js
 cat output/js/ModelArray.js >> output/bindit.js
+cat output/js/Binding.js >> output/bindit.js
 
 #make bindit-min.js
 java -jar libs/compiler.jar --js output/bindit.js --js_output_file output/bindit-min.js --compilation_level SIMPLE_OPTIMIZATIONS

@@ -1,0 +1,2 @@
+class Binding
+  constructor: (@element)
