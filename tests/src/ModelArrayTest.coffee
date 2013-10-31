@@ -38,6 +38,9 @@ test 'Setter', ->
 
 test 'length', ->
   model = new BindIt.Model []
+  mock = handler : (->)
+  expectCall(mock, 'handler').with model, 'length', 0, 20
+  model.addEventListener BindIt.Model.Events.VALUE_CHANGED, mock.handler
   model.length = 20
 
   ok model.hasOwnProperty(19), 'Define properties, after increment length'
@@ -143,3 +146,12 @@ test 'indexOf', ->
 
   equal model.indexOf(42), 0, 'indexOf returns valid value (Number)'
   equal model.indexOf(new BindIt.Model(item)), 1, 'indexOf returns valid value (Model)'
+
+test 'selectedItem', ->
+  model = new BindIt.Model []
+  mock = handler : (->)
+  expectCall(mock, 'handler').with model, 'selectedItem', 0, 20
+  model.addEventListener BindIt.Model.Events.VALUE_CHANGED, mock.handler
+  model.selectedItem = 20
+
+  equal model.selectedItem, 20, 'Getter returns valid value'

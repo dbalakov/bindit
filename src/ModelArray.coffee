@@ -1,8 +1,12 @@
 class ModelArray extends BindIt.Model
   constructor: (@source) ->
     super(@source, true)
+    @source.selectedItem = 0
+
     BindIt.Model.processProperty @, 'length'
+    BindIt.Model.processProperty @, 'selectedItem'
     processArrayItems @
+
     self = @
     @addEventListener BindIt.Model.Events.VALUE_CHANGED, (model, propertyName, oldValue, value)->
       return if (propertyName != 'length')
