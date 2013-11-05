@@ -5,9 +5,9 @@ class ModelArray extends BindIt.Model
 
     BindIt.Model.processProperty @, 'length'
     BindIt.Model.processProperty @, 'selectedItem'
+    @selectedItem = 0
     processArrayItems @
 
-    self = @
     @addEventListener BindIt.Model.Events.VALUE_CHANGED, (model, propertyName, oldValue, value)->
       return if (propertyName != 'length')
       return if (oldValue > value)
