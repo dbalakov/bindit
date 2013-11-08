@@ -16,7 +16,7 @@ class View
   getModel: (returnArray)->
     path = @getModelPath()
     return null if !path? || path.length == 0
-    result = eval path.shift()
+    result = eval path.shift() #TODO try catch
     while path.length > 0
       return null if !result?
       result = result[result.selectedItem] if result instanceof BindIt.ModelArray
@@ -31,7 +31,6 @@ class View
 
   modelArrayHandler: (model, type, index, value)=>
     @refreshSubscribes()
-    console.log arguments
     @changed? @, model, BindIt.Model.Events.ARRAY_CHANGED, type, index, value
 
   refreshSubscribes: ->
