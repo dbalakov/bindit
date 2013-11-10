@@ -16,7 +16,11 @@ class View
   getModel: (returnArray)->
     path = @getModelPath()
     return null if !path? || path.length == 0
-    result = eval path.shift() #TODO try catch
+    try
+      result = eval path.shift()
+    catch
+      result = null
+
     while path.length > 0
       return null if !result?
       result = result[result.selectedItem] if result instanceof BindIt.ModelArray

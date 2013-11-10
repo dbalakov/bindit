@@ -3,8 +3,11 @@ BindIt.VIEW_ATTRIBUTE = 'view'
 getViewClass = (element)->
   className = element.getAttribute BindIt.VIEW_ATTRIBUTE
   className = BindIt.View.Default[element.tagName.toLowerCase()] if !className?
-  className = BindIt.View if !className?
-  return eval className #TODO try catch
+  className = 'BindIt.View' if !className?
+  result = BindIt.View
+  try
+    result = eval className
+  result
 
 createView = (element)->
   return if !element?

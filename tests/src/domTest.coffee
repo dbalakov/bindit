@@ -16,6 +16,7 @@ asyncTest 'DOM events', 2, ->
 test 'getViewClass', ()->
   equal BindIt.DOM.getViewClass(createElement 'div', 'domTest.model', 'TestView'), TestView, 'getViewClass returns view class from attribute'
   equal BindIt.DOM.getViewClass(createElement 'div', 'domTest.model'), DivView, 'getViewClass returns default view class'
+  equal BindIt.DOM.getViewClass(createElement 'br', 'domTest.model', 'UnknownClass'), BindIt.View, 'getViewClass returns BindIt.View for unknown class'
 
 createElement = (tag, data, view)->
   div = document.createElement tag

@@ -68,6 +68,7 @@ test 'getModel', ->
   equal (new BindIt.View createDivWithDataBindAttribute 'window.Boolean').getModel(false), window.Boolean, 'getModel returns valid value'
   equal (new BindIt.View createDivWithDataBindAttribute 'window.modelArray').getModel(false), null, 'getModel returns valid value (array, returnArray-false)'
   equal (new BindIt.View createDivWithDataBindAttribute 'window.modelArray').getModel(true), window.modelArray, 'getModel returns valid value (array, returnArray-true)'
+  equal (new BindIt.View createDivWithDataBindAttribute 'asdasasd:12313:1211').getModel(false), null, 'getModel returns null for unknown variable'
 
 createDivWithDataBindAttribute = (dataBind)->
   result = document.createElement('div')
