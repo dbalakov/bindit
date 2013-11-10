@@ -5,3 +5,4 @@
 #= require ../../../src/ModelArray.coffee
 #= require ../../../src/View.coffee
 #= require ../../../src/dom.coffee
+#= require ../../../src/Template.coffee

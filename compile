@@ -14,6 +14,7 @@ cat output/js/Model.js           >> output/bindit.js
 cat output/js/ModelArray.js      >> output/bindit.js
 cat output/js/View.js            >> output/bindit.js
 cat output/js/dom.js             >> output/bindit.js
+cat output/js/Template.js        >> output/bindit.js
 
 #make bindit-min.js
 java -jar libs/compiler.jar --js output/bindit.js --js_output_file output/bindit-min.js --compilation_level SIMPLE_OPTIMIZATIONS
