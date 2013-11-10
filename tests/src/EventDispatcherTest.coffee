@@ -9,7 +9,7 @@ test 'Handler was called', ->
   eventDispatcher.callEvent 'event'
 
 test 'All handlers was called', ->
-  mock = handler : (->), anotherHandler: (->)
+  mock = { handler : (->), anotherHandler: (->) }
   expectCall mock, 'handler'
   expectCall mock, 'anotherHandler'
 

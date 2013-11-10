@@ -4,7 +4,7 @@ Mincer  = require 'mincer'
 
 #Mincer
 Mincer.CoffeeEngine.setOptions bare:false
-Mincer.logger.use(console)
+Mincer.logger.use console
 
 mincerEnv = new Mincer.Environment
 mincerEnv.appendPath 'src'

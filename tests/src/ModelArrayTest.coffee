@@ -3,6 +3,7 @@ module 'ModelArray'
 test 'Constructor', ->
   model = new BindIt.Model [ 42 ]
   ok model.hasOwnProperty(0), 'Constructor define properties'
+  equal model.selectedItem, 0, 'selectedItem=0'
 
 test 'Getters', ->
   source = [ 42, {}, [ 1, 42 ], 'string' ]
