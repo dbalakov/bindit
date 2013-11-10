@@ -18,8 +18,6 @@ class View
     return null if !path? || path.length == 0
     try
       result = eval path.shift()
-    catch
-      result = null
 
     while path.length > 0
       return null if !result?
