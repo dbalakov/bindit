@@ -1,8 +1,9 @@
 BindIt.DATA_BIND_ATTRIBUTE = "data-bind";
 
-class View
+class View extends BindIt.DOMEventDispatcher
   constructor: (@element) ->
     throw new Error('Element should have only one view') if @element.__bindit_view?
+    super @element
     element.__bindit_view = @
     @subscribes = []
     @refreshSubscribes()
@@ -63,6 +64,24 @@ class View
       m.removeEventListener BindIt.Model.Events.ARRAY_CHANGED, @modelArrayHandler if m instanceof BindIt.ModelArray
 
     @subscribes = newSubscribes
+
+  callBindFunction:()->
+    modelPath = @getModelPath()
+    modelPath = [] if !modelPath?
+    parent = null
+    model = window
+    newSubscribes = []
+    while modelPath.length > 0
+      break if !model?
+      if model instanceof BindIt.ModelArray
+        parent = model
+        model = model[model.selectedItem]
+      break if !model?
+      parent = model
+      model = model[modelPath.shift()]
+
+    return if !model? || !(model instanceof Function)
+    model.apply parent, arguments
 
 fillSubscribes = (model, subscribes, returnIfModelExists)->
   return if !model? || !(model instanceof BindIt.Model)

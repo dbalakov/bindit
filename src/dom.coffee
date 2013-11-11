@@ -23,21 +23,23 @@ processElement = (parent)->
   elements = parent.getElementsByTagName '*'
   createView(element) for element in elements
 
-#onload
-onload = ()-> processElement document
-(->
-  return window.addEventListener 'load', onload if window.addEventListener?
-)()
+addEventHandler = (element, event, handler)->
+  return if !handler?
 
-#dom tree changed
-(->
-  return window.addEventListener 'DOMSubtreeModified', (e)-> processElement e.target if window.addEventListener?
-)()
+  return element.addEventListener(event, handler) if element.addEventListener?
 
 BindIt.DOM = {
-  getViewClass : getViewClass,
-  createView : createView,
-  processElement : processElement
+  getViewClass    : getViewClass,
+  createView      : createView,
+  processElement  : processElement,
+  addEventHandler : addEventHandler
 }
 
 BindIt.View.Default = {}
+
+#onload
+onload = ()-> processElement document
+(->
+  BindIt.DOM.addEventHandler window, 'load', onload
+  BindIt.DOM.addEventHandler window, 'DOMSubtreeModified', (e)-> processElement e.target
+)()

@@ -51,8 +51,8 @@ test 'child', ()->
 
 test 'Only one available: html, text, child', ()->
   throws (-> new BindIt.Template({ html : '1', text : '2' }).create()), 'Only one available: html, text'
-  throws (-> new BindIt.Template({ html : '1', child : [] }).create()), 'Only one available: html, text'
-  throws (-> new BindIt.Template({ text : '1', child : [] }).create()), 'Only one available: html, text'
+  throws (-> new BindIt.Template({ html : '1', child : [] }).create()), 'Only one available: html, child'
+  throws (-> new BindIt.Template({ text : '1', child : [] }).create()), 'Only one available: text, child'
 
 assertOftenAttribute = (attr)->
   #string

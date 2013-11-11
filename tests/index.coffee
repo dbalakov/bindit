@@ -19,4 +19,4 @@ app.configure ()->
   app.use express.static "tests/public"
   app.use '/assets', Mincer.createServer(mincerEnv)
 
-server.listen 3000
+server.listen 3300

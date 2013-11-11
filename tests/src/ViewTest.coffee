@@ -70,7 +70,14 @@ test 'getModel', ->
   equal (new BindIt.View createDivWithDataBindAttribute 'window.modelArray').getModel(true), window.modelArray, 'getModel returns valid value (array, returnArray-true)'
   equal (new BindIt.View createDivWithDataBindAttribute 'asdasasd:12313:1211').getModel(false), null, 'getModel returns null for unknown variable'
 
+test 'callBindFunction', ->
+  window.model = new BindIt.Model { func : ()-> }
+  expectCall(window.model, 'func').with 'arg', 0, 42
+
+  view = new BindIt.View createDivWithDataBindAttribute 'model:func'
+  view.callBindFunction 'arg', 0, 42
+
 createDivWithDataBindAttribute = (dataBind)->
-  result = document.createElement('div')
+  result = document.createElement 'div'
   result.setAttribute BindIt.DATA_BIND_ATTRIBUTE, dataBind
   result
