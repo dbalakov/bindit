@@ -6,6 +6,13 @@ test 'Constructor', ()->
   BindIt.View.Input.byType.test = InputTest
 
   ok createInputView('test') instanceof InputTest, 'Constructor return valid view from byType'
+  ok createInputView('button') instanceof BindIt.View.Button, 'Constructor return valid view for type "button"'
+
+  logger = BindIt.Logger
+  BindIt.Logger = { warn : -> }
+  expectCall(BindIt.Logger, 'warn')
+  createInputView 'none'
+  BindIt.Logger = logger
 
 test 'Default view', ()->
   equal BindIt.DOM.getViewClass(document.createElement('input')), BindIt.View.Input, 'Default view for input tag is InputView'
