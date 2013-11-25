@@ -21,6 +21,6 @@ class ButtonView extends BindIt.View
     enabled = enabled.apply model if enabled instanceof Function
     enabled == true && (model instanceof Function || model.call instanceof Function)
 
-BindIt.View.ButtonView = ButtonView
+BindIt.View.Button = ButtonView
 BindIt.View.Default.button = ButtonView
 BindIt.View.Default.a = ButtonView

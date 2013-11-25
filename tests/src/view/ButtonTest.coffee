@@ -40,13 +40,13 @@ test 'Change model, call setEnabled', ()->
   window.model.func = null
 
 test 'Default view', ()->
-  equal BindIt.DOM.getViewClass(document.createElement('button')), BindIt.View.ButtonView, 'Default view for button tag is ButtonView'
-  equal BindIt.DOM.getViewClass(document.createElement('a')), BindIt.View.ButtonView, 'Default view for tag "a" is ButtonView'
+  equal BindIt.DOM.getViewClass(document.createElement('button')), BindIt.View.Button, 'Default view for button tag is ButtonView'
+  equal BindIt.DOM.getViewClass(document.createElement('a')), BindIt.View.Button, 'Default view for tag "a" is ButtonView'
 
 createButtonViewDataBindAttribute = (dataBind)->
   element = document.createElement 'button'
   element.setAttribute BindIt.DATA_BIND_ATTRIBUTE, dataBind
-  new BindIt.View.ButtonView element
+  new BindIt.View.Button element
 
 click = (element)->
   event = document.createEvent('MouseEvents')

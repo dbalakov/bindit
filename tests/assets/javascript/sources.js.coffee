@@ -10,3 +10,4 @@
 
 #View
 #= require ../../../src/view/Button.coffee
+#= require ../../../src/view/Input.coffee
