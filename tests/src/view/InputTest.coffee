@@ -5,8 +5,8 @@ class InputTest extends BindIt.View
 test 'Constructor', ()->
   BindIt.View.Input.byType.test = InputTest
 
-  ok createInputView('test') instanceof InputTest, 'Constructor return valid view from byType'
-  ok createInputView('button') instanceof BindIt.View.Button, 'Constructor return valid view for type "button"'
+  ok createInputView('test') instanceof InputTest, 'Constructor returns valid view from byType'
+  ok createInputView('button') instanceof BindIt.View.Button, 'Constructor returns valid view for type "button"'
 
   logger = BindIt.Logger
   BindIt.Logger = { warn : -> }

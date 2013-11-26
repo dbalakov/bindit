@@ -28,6 +28,21 @@ class View extends BindIt.DOMEventDispatcher
     result = result[result.selectedItem] if result instanceof BindIt.ModelArray && returnArray != true
     return result
 
+  setValue:(value)->
+    modelPath = @getModelPath()
+    modelPath = [] if !modelPath?
+    parent = window
+    while modelPath.length > 1
+      return if !parent?
+      parent = parent[parent.selectedItem] if parent instanceof BindIt.ModelArray
+      return if !parent?
+      parent = parent[modelPath.shift()]
+
+    return if !parent?
+    parent = parent[parent.selectedItem] if parent instanceof BindIt.ModelArray
+    return if !parent?
+    parent[modelPath[0]] = value
+
   modelHandler: (model, property, oldValue, newValue)=>
     @refreshSubscribes()
     @changed? @, model, BindIt.Model.Events.VALUE_CHANGED, property, oldValue, newValue
@@ -70,7 +85,6 @@ class View extends BindIt.DOMEventDispatcher
     modelPath = [] if !modelPath?
     parent = null
     model = window
-    newSubscribes = []
     while modelPath.length > 0
       break if !model?
       if model instanceof BindIt.ModelArray

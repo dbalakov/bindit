@@ -70,6 +70,18 @@ test 'getModel', ->
   equal (new BindIt.View createDivWithDataBindAttribute 'window.modelArray').getModel(true), window.modelArray, 'getModel returns valid value (array, returnArray-true)'
   equal (new BindIt.View createDivWithDataBindAttribute 'asdasasd:12313:1211').getModel(false), null, 'getModel returns null for unknown variable'
 
+test 'setValue', ->
+  window.model = new BindIt.Model { text : 'text', array: [ { item : 1 } ] }
+  window.anotherModel = new BindIt.Model {}
+
+  (new BindIt.View(createDivWithDataBindAttribute('model:text'))).setValue('text2')
+  (new BindIt.View(createDivWithDataBindAttribute('anotherModel'))).setValue('anotherModel')
+  (new BindIt.View(createDivWithDataBindAttribute('model:array:item'))).setValue(42)
+
+  equal window.model.text, 'text2', 'setValue change model'
+  equal window.anotherModel, 'anotherModel', 'setValue change model (model path length=1)'
+  equal window.model.array[0].item, 42, 'setValue change model in array'
+
 test 'callBindFunction', ->
   window.model = new BindIt.Model { func : ()-> }
   expectCall(window.model, 'func').with 'arg', 0, 42
