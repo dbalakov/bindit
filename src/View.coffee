@@ -1,4 +1,5 @@
 BindIt.DATA_BIND_ATTRIBUTE = "data-bind";
+BindIt.FORM_BIND_ATTRIBUTE = "form-bind";
 
 class View extends BindIt.DOMEventDispatcher
   constructor: (@element) ->
@@ -9,9 +10,14 @@ class View extends BindIt.DOMEventDispatcher
     @refreshSubscribes()
 
   getModelPath: ->
-    bindingObject = this.element.getAttribute(BindIt.DATA_BIND_ATTRIBUTE);
-    return null if (bindingObject == null)
-    parts = bindingObject.split ":"
+    bindingPath = @element.getAttribute(BindIt.DATA_BIND_ATTRIBUTE);
+    return null if (bindingPath == null)
+    parent = @element.parentNode
+    while (parent != null)
+      bindingPath = "#{parent.getAttribute(BindIt.FORM_BIND_ATTRIBUTE)}:#{bindingPath}" if parent.hasAttribute? && parent.hasAttribute BindIt.FORM_BIND_ATTRIBUTE
+      parent = parent.parentNode
+
+    parts = bindingPath.split ":"
     return if parts.length == 0 then null else parts
 
   getModel: (returnArray)->

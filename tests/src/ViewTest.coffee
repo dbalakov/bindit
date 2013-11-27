@@ -63,6 +63,29 @@ test 'getModelPath', ->
   view = new BindIt.View createDivWithDataBindAttribute 'data:property:another_property'
   deepEqual view.getModelPath(), [ 'data', 'property', 'another_property' ], 'getModelPath returns valid path'
 
+  parent = createDivWithFormBindAttribute 'model'
+  child = createDivWithDataBindAttribute 'property'
+  parent.appendChild child
+
+  view = new BindIt.View child
+  deepEqual view.getModelPath(), [ 'model', 'property' ], 'getModelPath returns valid path with form-bind'
+
+test 'getModelPath (dynamical)', ->
+  class ViewTest extends BindIt.View
+    constructor: (element)->
+      super element
+      @path = @getModelPath()
+
+  window.ViewTest = ViewTest
+
+  parent = createDivWithFormBindAttribute 'model'
+  document.getElementById('trash').appendChild parent
+  child = createDivWithDataBindAttribute 'property'
+  child.setAttribute BindIt.VIEW_ATTRIBUTE, 'ViewTest'
+  parent.appendChild child
+
+  deepEqual child.__bindit_view.path, [ 'model', 'property' ], 'getModelPath returns valid path with form-bind (dynamical add)'
+
 test 'getModel', ->
   window.modelArray = new BindIt.Model []
   equal (new BindIt.View createDivWithDataBindAttribute 'window.Boolean').getModel(false), window.Boolean, 'getModel returns valid value'
@@ -88,6 +111,11 @@ test 'callBindFunction', ->
 
   view = new BindIt.View createDivWithDataBindAttribute 'model:func'
   view.callBindFunction 'arg', 0, 42
+
+createDivWithFormBindAttribute = (formBind)->
+  result = document.createElement 'div'
+  result.setAttribute BindIt.FORM_BIND_ATTRIBUTE, formBind
+  result
 
 createDivWithDataBindAttribute = (dataBind)->
   result = document.createElement 'div'
