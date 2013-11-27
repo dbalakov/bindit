@@ -156,3 +156,7 @@ test 'selectedItem', ->
   model.selectedItem = 20
 
   equal model.selectedItem, 20, 'Getter returns valid value'
+
+test 'selectedItems', ->
+  model = new BindIt.Model []
+  ok model.selectedItems instanceof BindIt.ModelArray, 'Array has selectedItems'

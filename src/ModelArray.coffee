@@ -1,10 +1,14 @@
+BindIt.Model.ArrayEvents = { INSERTED: 'inserted', REMOVED : 'removed', APOCALYPTIC : 'apocalyptic' }
+
 class ModelArray extends BindIt.Model
   constructor: (@source) ->
     super(@source, true)
     @source.selectedItem = 0
+    @source.selectedItems = []
 
     BindIt.Model.processProperty @, 'length'
     BindIt.Model.processProperty @, 'selectedItem'
+    BindIt.Model.processProperty @, 'selectedItems'
     @selectedItem = 0
     processArrayItems @
 
@@ -67,4 +71,3 @@ processArrayItems = (model) ->
   BindIt.Model.processProperty(model, i) for i in [0..(model.length-1)]
 
 window.BindIt.ModelArray = ModelArray
-BindIt.Model.ArrayEvents = { INSERTED: 'inserted', REMOVED : 'removed', APOCALYPTIC : 'apocalyptic' }
