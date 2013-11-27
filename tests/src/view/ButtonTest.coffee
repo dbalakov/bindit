@@ -42,6 +42,12 @@ test 'Change model, call setEnabled', ()->
 test 'Default view', ()->
   equal BindIt.DOM.getViewClass(document.createElement('button')), BindIt.View.Button, 'Default view for button tag is ButtonView'
   equal BindIt.DOM.getViewClass(document.createElement('a')), BindIt.View.Button, 'Default view for tag "a" is ButtonView'
+  ok new BindIt.View.Input(createInput('button')) instanceof BindIt.View.Button, 'InputView constructor returns instance of ButtonView if type is "button"'
+
+createInput = (type)->
+  element = document.createElement 'input'
+  element.setAttribute 'type', type
+  element
 
 createButtonViewDataBindAttribute = (dataBind)->
   element = document.createElement 'button'

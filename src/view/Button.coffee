@@ -24,3 +24,5 @@ class ButtonView extends BindIt.View
 BindIt.View.Button = ButtonView
 BindIt.View.Default.button = ButtonView
 BindIt.View.Default.a = ButtonView
+
+BindIt.View.Input.byType.button = ButtonView

@@ -7,7 +7,5 @@ class InputView extends BindIt.View
 
 InputView.byType = {}
 
-InputView.byType.button = BindIt.View.Button
-
 BindIt.View.Input = InputView
 BindIt.View.Default.input = InputView
