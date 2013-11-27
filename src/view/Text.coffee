@@ -25,3 +25,4 @@ class TextView extends BindIt.View
 BindIt.View.Text = TextView
 BindIt.View.Default.textarea = TextView
 BindIt.View.Input.byType.text = TextView
+BindIt.View.Input.byType.password = TextView
