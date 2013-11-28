@@ -86,12 +86,12 @@ test 'getModelPath (dynamical)', ->
 
   deepEqual child.__bindit_view.path, [ 'model', 'property' ], 'getModelPath returns valid path with form-bind (dynamical add)'
 
-test 'getModel', ->
+test 'getValue', ->
   window.modelArray = new BindIt.Model []
-  equal (new BindIt.View createDivWithDataBindAttribute 'window.Boolean').getModel(false), window.Boolean, 'getModel returns valid value'
-  equal (new BindIt.View createDivWithDataBindAttribute 'window.modelArray').getModel(false), null, 'getModel returns valid value (array, returnArray-false)'
-  equal (new BindIt.View createDivWithDataBindAttribute 'window.modelArray').getModel(true), window.modelArray, 'getModel returns valid value (array, returnArray-true)'
-  equal (new BindIt.View createDivWithDataBindAttribute 'asdasasd:12313:1211').getModel(false), null, 'getModel returns null for unknown variable'
+  equal (new BindIt.View createDivWithDataBindAttribute 'window.Boolean').getValue(false), window.Boolean, 'getModel returns valid value'
+  equal (new BindIt.View createDivWithDataBindAttribute 'window.modelArray').getValue(false), null, 'getModel returns valid value (array, returnArray-false)'
+  equal (new BindIt.View createDivWithDataBindAttribute 'window.modelArray').getValue(true), window.modelArray, 'getModel returns valid value (array, returnArray-true)'
+  equal (new BindIt.View createDivWithDataBindAttribute 'asdasasd:12313:1211').getValue(false), null, 'getModel returns null for unknown variable'
 
 test 'setValue', ->
   window.model = new BindIt.Model { text : 'text', array: [ { item : 1 } ] }

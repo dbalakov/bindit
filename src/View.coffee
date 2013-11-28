@@ -17,10 +17,9 @@ class View extends BindIt.DOMEventDispatcher
       bindingPath = "#{parent.getAttribute(BindIt.FORM_BIND_ATTRIBUTE)}:#{bindingPath}" if parent.hasAttribute? && parent.hasAttribute BindIt.FORM_BIND_ATTRIBUTE
       parent = parent.parentNode
 
-    parts = bindingPath.split ":"
-    return if parts.length == 0 then null else parts
+    bindingPath.split ":"
 
-  getModel: (returnArray)->
+  getValue: (returnArray)->
     path = @getModelPath()
     return null if !path? || path.length == 0
     try

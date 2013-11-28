@@ -9,10 +9,10 @@ class TextView extends BindIt.View
 
   changed: ->
     @setEnabled()
-    @setElementValue @getModel()
+    @setElementValue @getValue()
 
   setEnabled: ->
-    return @element.removeAttribute 'disabled' if @getModel()?
+    return @element.removeAttribute 'disabled' if @getValue()?
     @element.setAttribute 'disabled', 'disabled'
 
   setElementValue: (value)->
@@ -20,7 +20,7 @@ class TextView extends BindIt.View
     @element.value = value if @element.value != value
 
   elementListener:=>
-    @setValue(@element.value) if @element.value != @getModel()
+    @setValue(@element.value) if @element.value != @getValue()
 
 BindIt.View.Text = TextView
 BindIt.View.Default.textarea = TextView

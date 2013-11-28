@@ -1,14 +1,14 @@
 class ButtonView extends BindIt.View
   constructor: (@element) ->
     super @element
-    @setEnabled @getModel(false)
+    @setEnabled @getValue(false)
     @click ()=>
-      model = @getModel false
+      model = @getValue false
       return if !@getEnabled(model)
       return @callBindFunction() if model instanceof Function
       model.call.apply(model) if model.call instanceof Function
 
-  changed: ()-> @setEnabled @getModel(false)
+  changed: ()-> @setEnabled @getValue(false)
 
   setEnabled: (model)->
     return @element.removeAttribute 'disabled' if @getEnabled(model)

@@ -5,8 +5,8 @@ class CheckboxView extends BindIt.View
     @changed()
 
   changed:->
-    @setElementValue @getModel() == true
-    @setElementEnabled @getModel() == true || @getModel() == false
+    @setElementValue @getValue() == true
+    @setElementEnabled @getValue() == true || @getValue() == false
 
   subscribe:->
     @element.onchange = =>
