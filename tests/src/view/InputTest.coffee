@@ -1,8 +1,9 @@
 module 'Input'
 
-class InputTest extends BindIt.View
 
 test 'Constructor', ()->
+  class InputTest extends BindIt.View
+
   BindIt.View.Input.byType.test = InputTest
 
   ok createInputView('test') instanceof InputTest, 'Constructor returns valid view from byType'
