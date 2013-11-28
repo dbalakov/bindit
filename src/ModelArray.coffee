@@ -63,8 +63,6 @@ class ModelArray extends BindIt.Model
     BindIt.getModel result
 
   indexOf: (value) ->
-    window.a = @
-    window.i = value
     @getSource().indexOf(BindIt.getSource(value))
 
 processArrayItems = (model) ->

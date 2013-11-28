@@ -20,6 +20,7 @@ cat output/js/Template.js           >> output/bindit.js
 cat output/js/view/Input.js         >> output/bindit.js
 cat output/js/view/Button.js        >> output/bindit.js
 cat output/js/view/Text.js          >> output/bindit.js
+cat output/js/view/Checkbox.js      >> output/bindit.js
 
 #make bindit-min.js
 java -jar libs/compiler.jar --js output/bindit.js --js_output_file output/bindit-min.js --compilation_level SIMPLE_OPTIMIZATIONS
