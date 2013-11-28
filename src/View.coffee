@@ -19,35 +19,6 @@ class View extends BindIt.DOMEventDispatcher
 
     bindingPath.split ":"
 
-  getValue: (returnArray)->
-    path = @getModelPath()
-    return null if !path? || path.length == 0
-    try
-      result = eval path.shift()
-
-    while path.length > 0
-      return null if !result?
-      result = result[result.selectedItem] if result instanceof BindIt.ModelArray
-      result = result[path.shift()]
-
-    result = result[result.selectedItem] if result instanceof BindIt.ModelArray && returnArray != true
-    return result
-
-  setValue:(value)->
-    modelPath = @getModelPath()
-    modelPath = [] if !modelPath?
-    parent = window
-    while modelPath.length > 1
-      return if !parent?
-      parent = parent[parent.selectedItem] if parent instanceof BindIt.ModelArray
-      return if !parent?
-      parent = parent[modelPath.shift()]
-
-    return if !parent?
-    parent = parent[parent.selectedItem] if parent instanceof BindIt.ModelArray
-    return if !parent?
-    parent[modelPath[0]] = value
-
   modelHandler: (model, property, oldValue, newValue)=>
     @refreshSubscribes()
     @changed? @, model, BindIt.Model.Events.VALUE_CHANGED, property, oldValue, newValue
@@ -84,6 +55,35 @@ class View extends BindIt.DOMEventDispatcher
       m.removeEventListener BindIt.Model.Events.ARRAY_CHANGED, @modelArrayHandler if m instanceof BindIt.ModelArray
 
     @subscribes = newSubscribes
+
+  getValue: (returnArray)->
+    path = @getModelPath()
+    return null if !path? || path.length == 0
+    try
+      result = eval path.shift()
+
+    while path.length > 0
+      return null if !result?
+      result = result[result.selectedItem] if result instanceof BindIt.ModelArray
+      result = result[path.shift()]
+
+    result = result[result.selectedItem] if result instanceof BindIt.ModelArray && returnArray != true
+    return result
+
+  setValue:(value)->
+    modelPath = @getModelPath()
+    modelPath = [] if !modelPath?
+    parent = window
+    while modelPath.length > 1
+      return if !parent?
+      parent = parent[parent.selectedItem] if parent instanceof BindIt.ModelArray
+      return if !parent?
+      parent = parent[modelPath.shift()]
+
+    return if !parent?
+    parent = parent[parent.selectedItem] if parent instanceof BindIt.ModelArray
+    return if !parent?
+    parent[modelPath[0]] = value
 
   callBindFunction:()->
     modelPath = @getModelPath()
