@@ -111,4 +111,4 @@ fillSubscribes = (model, subscribes, returnIfModelExists)->
     return
   fillSubscribes model[property], subscribes, true for property of model
 
-window.BindIt.View = View
+BindIt.View = View

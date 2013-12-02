@@ -17,6 +17,7 @@ cat output/js/View.js               >> output/bindit.js
 cat output/js/dom.js                >> output/bindit.js
 cat output/js/Template.js           >> output/bindit.js
 #View
+cat output/js/view/ListView.js      >> output/bindit.js
 cat output/js/view/Input.js         >> output/bindit.js
 cat output/js/view/Button.js        >> output/bindit.js
 cat output/js/view/Text.js          >> output/bindit.js

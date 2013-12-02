@@ -1,6 +1,5 @@
 module 'Input'
 
-
 test 'Constructor', ()->
   class InputTest extends BindIt.View
 
