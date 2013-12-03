@@ -27,7 +27,7 @@ getSource = (model)->
 processProperty = (model, propertyName) ->
   return if model.hasOwnProperty propertyName
   Object.defineProperty model, propertyName, {
-    get: () ->
+    get: ->
       result = model.getSource()[propertyName]
       return null if !result?
       return result.bind(model) if (result instanceof Function)

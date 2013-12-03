@@ -1,11 +1,18 @@
 #= require ../../../src/BindIt.coffee
-#= require ../../../src/Logger.coffee
+
+#Utils
+#= require ../../../src/utils/Logger.coffee
+#= require ../../../src/utils/Hash.coffee
+
+#Binding
 #= require ../../../src/EventDispatcher.coffee
 #= require ../../../src/Model.coffee
 #= require ../../../src/ModelArray.coffee
 #= require ../../../src/DOMEventDispatcher.coffee
 #= require ../../../src/View.coffee
 #= require ../../../src/dom.coffee
+
+#Templates
 #= require ../../../src/Template.coffee
 
 #View
