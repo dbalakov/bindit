@@ -10,14 +10,14 @@ mkdir output
 cat output/js/BindIt.js             >> output/bindit.js
 
 #Utils
-cat output/js/utils/Hash.js             >> output/bindit.js
 cat output/js/utils/Logger.js             >> output/bindit.js
-cat output/js/utils/EventDispatcher.js    >> output/bindit.js
-cat output/js/utils/Model.js              >> output/bindit.js
-cat output/js/utils/ModelArray.js         >> output/bindit.js
-cat output/js/utils/DOMEventDispatcher.js >> output/bindit.js
+cat output/js/utils/Hash.js             >> output/bindit.js
 
 #Binding
+cat output/js/EventDispatcher.js    >> output/bindit.js
+cat output/js/Model.js              >> output/bindit.js
+cat output/js/ModelArray.js         >> output/bindit.js
+cat output/js/DOMEventDispatcher.js >> output/bindit.js
 cat output/js/View.js               >> output/bindit.js
 cat output/js/dom.js                >> output/bindit.js
 cat output/js/Template.js           >> output/bindit.js
