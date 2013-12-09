@@ -35,6 +35,7 @@ class ListView extends BindIt.View
       return @element.insertBefore element, @element.childNodes[index]
 
     if model == viewValue && arrayEvent == BindIt.Model.ArrayEvents.REMOVED
+      @itemsElements.remove value
       return @element.removeChild @element.childNodes[index]
 
     @apocalyptic()
@@ -54,6 +55,7 @@ class ListView extends BindIt.View
 
   apocalyptic:->
     @element.removeChild @element.childNodes[0] while @element.childNodes? && @element.childNodes.length > 0
+    @itemsElements.clear()
     value = @getValue true
     return if !value?
 
@@ -61,6 +63,7 @@ class ListView extends BindIt.View
     for item in value
       element = @createItemElement(item)
       fragment.appendChild element
+
     @element.appendChild fragment
 
   createItemElement: (item)->
