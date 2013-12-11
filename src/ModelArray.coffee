@@ -1,15 +1,21 @@
 BindIt.Model.ArrayEvents = { INSERTED: 'inserted', REMOVED : 'removed', APOCALYPTIC : 'apocalyptic' }
 
 class ModelArray extends BindIt.Model
-  constructor: (@source) ->
+  constructor: (@source, hasSelectedItems) ->
     super(@source, true)
-    @source.selectedItem = 0
-    @source.selectedItems = []
-
     BindIt.Model.processProperty @, 'length'
+
+    #selectedItem
+    @source.selectedItem = 0
     BindIt.Model.processProperty @, 'selectedItem'
-    BindIt.Model.processProperty @, 'selectedItems'
-    @selectedItem = 0
+
+    #selectedItems
+    hasSelectedItems = true if !hasSelectedItems?
+    if hasSelectedItems == true
+      @source.selectedItems = 0
+      BindIt.Model.processProperty @, 'selectedItems'
+      @selectedItems = new BindIt.ModelArray [], false
+
     processArrayItems @
 
     @addEventListener BindIt.Model.Events.VALUE_CHANGED, (model, propertyName, oldValue, value)->
