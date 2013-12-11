@@ -160,3 +160,11 @@ test 'selectedItem', ->
 test 'selectedItems', ->
   model = new BindIt.Model []
   ok model.selectedItems instanceof BindIt.ModelArray, 'Array has selectedItems'
+
+test 'selectedItems (null if hasSelectedItems false)', ->
+  model = new BindIt.ModelArray [], false
+  ok !model.selectedItems?, 'Array has not selectedItems'
+
+test 'selectedItems array has not selectedItems', ->
+  model = new BindIt.Model []
+  equal model.selectedItems.selectedItems, null, 'Array has selectedItems'
