@@ -25,12 +25,24 @@ class ListView extends BindIt.View
     itemElement = @itemsElements.get(item)
     return @itemView.changed item, itemElement if item? && itemElement?
 
-    if model == viewValue && event == BindIt.Model.Events.VALUE_CHANGED && isNumber(field)
-      itemElement = @itemsElements.get(@itemsSubscribes.get(oldValue))
-      return @itemView.changed value, itemElement if value? && itemElement?
+    if model == viewValue && event == BindIt.Model.Events.VALUE_CHANGED
+      if field == 'length'
+        if oldValue < value
+          @element.appendChild(@createItemElement(model, index)) for index in [oldValue..(value - 1)]
+          return
+        else
+          while @element.childNodes[value]?
+            node = @element.childNodes[@element.childNodes.length - 1]
+            @itemsElements.remove @itemsElements.getKeyByValue node
+            @element.removeChild node
+          return
+
+      if isNumber(field)
+        itemElement = @itemsElements.get(@itemsSubscribes.get(oldValue))
+        return @itemView.changed value, itemElement if value? && itemElement?
 
     if model == viewValue && arrayEvent == BindIt.Model.ArrayEvents.INSERTED
-      element = @createItemElement value
+      element = @createItemElement model, index
       return @element.appendChild element if index == model.length - 1
       return @element.insertBefore element, @element.childNodes[index]
 
@@ -54,21 +66,20 @@ class ListView extends BindIt.View
     BindIt.Logger.warn "BindIt.View.ListView: invalid '#{ListView.ITEM_VIEW_ATTRIBUTE}' attribute", @element if !@itemView?
 
   apocalyptic:->
-    @element.removeChild @element.childNodes[0] while @element.childNodes? && @element.childNodes.length > 0
+    @element.removeChild(@element.firstChild) while @element.firstChild?
     @itemsElements.clear()
+
     value = @getValue true
     return if !value?
 
     fragment = document.createDocumentFragment()
-    for item in value
-      element = @createItemElement(item)
-      fragment.appendChild element
-
+    fragment.appendChild(@createItemElement(value, index)) for index in [0..value.length-1] if value.length > 0
     @element.appendChild fragment
 
-  createItemElement: (item)->
-    element = @itemView.create(item)
-    @itemsElements.add item, element
+  createItemElement: (value, index)->
+    item = value[index]
+    element = @itemView.create value, item
+    @itemsElements.add(item, element) if item?
     element
 
   refreshItemsSubscribes:->
