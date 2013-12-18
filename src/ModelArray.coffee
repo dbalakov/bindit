@@ -47,7 +47,7 @@ class ModelArray extends BindIt.Model
 
   shift: ()->
     result = @getSource().shift()
-    @callEvent BindIt.Model.Events.ARRAY_CHANGED, [ @, BindIt.Model.ArrayEvents.REMOVED, 0, new BindIt.Model BindIt.getModel(result) ]
+    @callEvent BindIt.Model.Events.ARRAY_CHANGED, [ @, BindIt.Model.ArrayEvents.REMOVED, 0, BindIt.getModel(result) ]
     BindIt.getModel result
 
   slice: ()->
