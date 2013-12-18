@@ -42,6 +42,14 @@ test 'get', ->
   equal hash.get('author'), 'Edgar Poe', 'get returns valid value (key="author")'
   equal hash.get('another author'), 'Kurt Vonnegut', 'get returns valid value (key="another author")'
 
+test 'getKeyByValue', ->
+  hash = new BindIt.Hash
+  hash.add 'author', 'Edgar Poe'
+  hash.add 'another author', 'Kurt Vonnegut'
+
+  equal hash.getKeyByValue('Edgar Poe'), 'author', 'returns valid value (value="Edgar Poe")'
+  equal hash.getKeyByValue('Kurt Vonnegut'), 'another author', 'returns valid value (value="Kurt Vonnegut")'
+
 test 'length', ->
   hash = new BindIt.Hash
   hash.add 'author', 'Edgar Poe'

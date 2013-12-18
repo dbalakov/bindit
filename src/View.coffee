@@ -107,6 +107,7 @@ class View extends BindIt.DOMEventDispatcher
     return if subscribes.indexOf(model) >= 0 && returnIfModelExists
     subscribes.push model if subscribes.indexOf(model) < 0
     if model instanceof BindIt.ModelArray
+      @fillSubscribes model.selectedItems, subscribes, true
       @fillSubscribes item, subscribes, true for item in model
       return
     @fillSubscribes model[property], subscribes, true for property of model

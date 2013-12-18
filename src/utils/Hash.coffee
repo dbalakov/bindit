@@ -28,6 +28,10 @@ class Hash
     index = @keys.indexOf key
     @values[index]
 
+  getKeyByValue: (value)->
+    index = @values.indexOf value
+    @keys[index]
+
   length:->
     @keys.length
 

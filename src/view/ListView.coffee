@@ -23,14 +23,52 @@ class ListView extends BindIt.View
 
     item = @itemsSubscribes.get(model)
     itemElement = @itemsElements.get(item)
-    return @itemView.changed item, itemElement if item? && itemElement?
+    if item? && itemElement?
+      index = viewValue.indexOf item
+      return @itemView.changed(itemElement, viewValue, index, viewValue.selectedItem == index, viewValue.selectedItems.indexOf(index) >= 0) if item? && itemElement?
 
-    if model == viewValue && event == BindIt.Model.Events.VALUE_CHANGED && isNumber(field)
-      itemElement = @itemsElements.get(@itemsSubscribes.get(oldValue))
-      return @itemView.changed value, itemElement if value? && itemElement?
+    if model == viewValue && event == BindIt.Model.Events.VALUE_CHANGED
+      if field == 'length'
+        if oldValue < value
+          @element.appendChild(@createItemElement(model, index)) for index in [oldValue..(value - 1)]
+          return
+        else
+          while @element.childNodes[value]?
+            node = @element.childNodes[@element.childNodes.length - 1]
+            @itemsElements.remove @itemsElements.getKeyByValue node
+            @element.removeChild node
+          return
+
+      if field == 'selectedItem'
+        @itemView.changed(@itemsElements.get(viewValue[oldValue]), viewValue, oldValue, false, viewValue.selectedItems.indexOf(oldValue) >= 0)
+        @itemView.changed(@itemsElements.get(viewValue[value]), viewValue, value, true, viewValue.selectedItems.indexOf(oldValue) >= 0)
+        return
+
+      if field == 'selectedItems'
+        diff = []
+        diff.push(item) for item in oldValue
+        diff.push(item) for item in value
+        @itemView.changed(@itemsElements.get(viewValue[index]), viewValue, index, index == viewValue.selectedItem, viewValue.selectedItems.indexOf(index) >= 0) for index in [0..diff.length-1] if diff.length > 0
+        return
+
+      if isNumber(field)
+        index = parseInt field
+        itemElement = @itemsElements.get(@itemsSubscribes.get(oldValue))
+        return @itemView.changed(itemElement, viewValue, index, viewValue.selectedItem == index, viewValue.selectedItems.indexOf(index) >= 0) if value? && itemElement?
+
+    if model == viewValue.selectedItems
+      if arrayEvent == BindIt.Model.ArrayEvents.INSERTED
+        itemElement = @itemsElements.get(viewValue[value])
+        @itemView.changed(itemElement, viewValue, value, viewValue.selectedItem == value, viewValue.selectedItems.indexOf(value) >= 0)
+        return
+
+      if arrayEvent == BindIt.Model.ArrayEvents.REMOVED
+        itemElement = @itemsElements.get(viewValue[value])
+        @itemView.changed(itemElement, viewValue, value, viewValue.selectedItem == value, viewValue.selectedItems.indexOf(value) >= 0)
+        return
 
     if model == viewValue && arrayEvent == BindIt.Model.ArrayEvents.INSERTED
-      element = @createItemElement value
+      element = @createItemElement model, index
       return @element.appendChild element if index == model.length - 1
       return @element.insertBefore element, @element.childNodes[index]
 
@@ -54,21 +92,20 @@ class ListView extends BindIt.View
     BindIt.Logger.warn "BindIt.View.ListView: invalid '#{ListView.ITEM_VIEW_ATTRIBUTE}' attribute", @element if !@itemView?
 
   apocalyptic:->
-    @element.removeChild @element.childNodes[0] while @element.childNodes? && @element.childNodes.length > 0
+    @element.removeChild(@element.firstChild) while @element.firstChild?
     @itemsElements.clear()
+
     value = @getValue true
     return if !value?
 
     fragment = document.createDocumentFragment()
-    for item in value
-      element = @createItemElement(item)
-      fragment.appendChild element
-
+    fragment.appendChild(@createItemElement(value, index)) for index in [0..value.length-1] if value.length > 0
     @element.appendChild fragment
 
-  createItemElement: (item)->
-    element = @itemView.create(item)
-    @itemsElements.add item, element
+  createItemElement: (value, index)->
+    item = value[index]
+    element = @itemView.create value, item, value.selectedItem == index, value.selectedItems.indexOf(index) >= 0
+    @itemsElements.add(item, element) if item?
     element
 
   refreshItemsSubscribes:->

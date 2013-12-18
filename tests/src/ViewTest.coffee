@@ -15,7 +15,7 @@ test 'Constructor', ->
 test 'refreshSubscribes', ->
   window.model = new BindIt.Model { array : [ {}, {} ] }
   view = new BindIt.View createDivWithDataBindAttribute 'model:array'
-  deepEqual view.subscribes, [ model, model.array, model.array[0], model.array[1] ], 'refreshSubscribes set valid subscribes (model is array)'
+  deepEqual view.subscribes, [ model, model.array, model.array.selectedItems, model.array[0], model.array[1] ], 'refreshSubscribes set valid subscribes (model is array)'
 
   window.model = new BindIt.Model { sex : 'male', name : { firstName : 'Edgar', lastName : 'Poe' } }
   view = new BindIt.View createDivWithDataBindAttribute 'model'
