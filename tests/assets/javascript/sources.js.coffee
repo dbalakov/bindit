@@ -21,3 +21,4 @@
 #= require ../../../src/view/Button.coffee
 #= require ../../../src/view/Text.coffee
 #= require ../../../src/view/Checkbox.coffee
+#= require ../../../src/view/Select.coffee
