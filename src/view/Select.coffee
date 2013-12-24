@@ -1,8 +1,8 @@
 class SelectItemView
-  create:(model, item, selected)->
+  create:(model, index, selected)->
     option = document.createElement 'option'
-    option.innerHTML = item
-    option.setAttribute 'value',
+    option.innerHTML = model[index]
+    option.setAttribute 'value', index
     option
 
   changed:(model, item, selected)->
