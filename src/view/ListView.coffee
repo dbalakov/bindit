@@ -77,12 +77,13 @@ class ListView extends BindIt.View
 
     if model == viewValue && arrayEvent == BindIt.Model.ArrayEvents.INSERTED
       element = @createItemElement model, index
+      @itemView.changed(@itemsElements[i], viewValue, i, viewValue.selectedItem == i, viewValue.selectedItems.indexOf(i) >= 0) for i in [(index + 1)..(viewValue.length - 1)] if viewValue.length > index + 1
       return @element.appendChild element if index == model.length - 1
       return @element.insertBefore element, @element.childNodes[index]
-      return
 
     if model == viewValue && arrayEvent == BindIt.Model.ArrayEvents.REMOVED
-      @itemsElements.splice value, 1
+      @itemsElements.splice index, 1
+      @itemView.changed(@itemsElements[i], viewValue, i, viewValue.selectedItem == i, viewValue.selectedItems.indexOf(i) >= 0) for i in [(index)..(viewValue.length - 1)] if viewValue.length > index
       return @element.removeChild @element.childNodes[index]
 
     @apocalyptic()

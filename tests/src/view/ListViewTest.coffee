@@ -159,7 +159,8 @@ test 'Array: element pushed, call create', ->
 test 'Array: element inserted, call create', ->
   window.model = new BindIt.Model { array : [ { name : 'Edgar Poe' }, { name : 'Howard Lovecraft' } ] }
   window.itemView =
-    args: [],
+    args: []
+    changedArgs: []
 
     create:(model, index)->
       @args.push index
@@ -168,7 +169,7 @@ test 'Array: element inserted, call create', ->
       element
 
     changed:->
-      @args = arguments
+      @changedArgs.push arguments
 
   view = createListView 'model:array', 'itemView'
   newValue = new BindIt.Model {}
@@ -181,13 +182,17 @@ test 'Array: element inserted, call create', ->
   equal view.element.childNodes[0].index, model.array[0], 'New element was inserted with valid index'
   equal itemView.args.length, 3, 'Create called'
   equal itemView.args[2], 0, 'Create called with valid arguments'
-  #TODO After insert must call changed for all elements (index changed)
+
+  equal itemView.changedArgs.length, 2, 'Changed call to all elements'
+  deepEqual itemView.changedArgs[0], { 0: view.element.childNodes[1], 1: model.array, 2: 1, 3: false, 4:false }, 'Changed call with valid arguments'
+  deepEqual itemView.changedArgs[1], { 0: view.element.childNodes[2], 1: model.array, 2: 2, 3: false, 4:false }, 'Changed call with valid arguments (2)'
 
 test 'Array: element removed', ->
   window.model = new BindIt.Model { array : [ { name : 'Edgar Poe' }, { name : 'Howard Lovecraft' } ] }
   window.itemView =
     elements : new BindIt.Hash
     args: []
+    changedArgs: []
 
     create:(model, index)->
       element = document.createElement 'div'
@@ -196,7 +201,7 @@ test 'Array: element removed', ->
       element
 
     changed:->
-      @args = arguments
+      @changedArgs.push arguments
 
   view = createListView 'model:array', 'itemView'
   expectCall(view, 'apocalyptic').calls 0
@@ -211,7 +216,9 @@ test 'Array: element removed', ->
 
   equal view.itemsElements.length, 1, 'See valid itemsElements'
   equal view.itemsElements[0], itemView.elements.get(model.array[0]), 'See valid itemsElements value'
-  #TODO After remove must call changed for all elements (index changed)
+
+  equal itemView.changedArgs.length, 1, 'Changed call to all elements'
+  deepEqual itemView.changedArgs[0], { 0: view.element.childNodes[0], 1: model.array, 2: 0, 3: true, 4:false }, 'Changed call to all elements'
 
 test 'Array: length incremented', ->
   window.model = new BindIt.Model { array : [ { name : 'Edgar Poe' }, { name : 'Howard Lovecraft' } ] }
