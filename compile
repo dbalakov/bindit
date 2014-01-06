@@ -10,8 +10,8 @@ mkdir output
 cat output/js/BindIt.js             >> output/bindit.js
 
 #Utils
-cat output/js/utils/Logger.js             >> output/bindit.js
-cat output/js/utils/Hash.js             >> output/bindit.js
+cat output/js/utils/Logger.js       >> output/bindit.js
+cat output/js/utils/Hash.js         >> output/bindit.js
 
 #Binding
 cat output/js/EventDispatcher.js    >> output/bindit.js
@@ -28,6 +28,7 @@ cat output/js/view/Input.js         >> output/bindit.js
 cat output/js/view/Button.js        >> output/bindit.js
 cat output/js/view/Text.js          >> output/bindit.js
 cat output/js/view/Checkbox.js      >> output/bindit.js
+cat output/js/view/Select.js        >> output/bindit.js
 
 #make bindit-min.js
 java -jar libs/compiler.jar --js output/bindit.js --js_output_file output/bindit-min.js --compilation_level SIMPLE_OPTIMIZATIONS

@@ -10,6 +10,18 @@ test 'Constructor: element with null item-view, constructor call logger', ->
   window.ghostItemView = null
   expectLogger 'warn', ()-> createListView 'model', 'ghostItemView'
 
+test 'Constructor: call init', ->
+  window.model = new BindIt.Model [ { name : 'Edgar Poe' }, { name : 'Howard Lovecraft' } ]
+  window.itemView = {
+    init:(->)
+    create:(->
+      document.createElement 'div'
+    )
+  }
+
+  expectCall(itemView, 'init').calls(1)
+  view = createListView 'model', 'itemView'
+
 test 'Constructor: create elements', ->
   window.model = new BindIt.Model [ { name : 'Edgar Poe' }, { name : 'Howard Lovecraft' } ]
   window.itemView = {
@@ -23,19 +35,19 @@ test 'Constructor: create elements', ->
   view = createListView 'model', 'itemView'
   equal itemView.args.length, 2, 'Constructor call itemView.create'
 
-  deepEqual itemView.args[0], { 0 : model, 1 : model[0], 2 : true, 3 : false }, 'Constructor call itemView.create with valid arguments (first call)'
-  deepEqual itemView.args[1], { 0 : model, 1 : model[1], 2 : false, 3 : false }, 'Constructor call itemView.create with valid arguments (second call)'
+  deepEqual itemView.args[0], { 0 : model, 1 : 0, 2 : true, 3 : false }, 'Constructor call itemView.create with valid arguments (first call)'
+  deepEqual itemView.args[1], { 0 : model, 1 : 1, 2 : false, 3 : false }, 'Constructor call itemView.create with valid arguments (second call)'
 
   equal view.element.childNodes.length, 2, 'Constructor append elements'
 
 test 'Constructor: state', ->
   window.model = new BindIt.Model [ { name : 'Edgar Poe', state : {} }, { name : 'Howard Lovecraft' } ]
   window.itemView =
-    elements : new BindIt.Hash
+    elements : {}
 
-    create : (model, item)->
+    create : (model, index)->
       element = document.createElement 'div'
-      @elements.add item, element
+      @elements[index] = element
       element
 
   view = createListView 'model', 'itemView'
@@ -47,8 +59,9 @@ test 'Constructor: state', ->
   equal view.itemsSubscribes.get(model[1]), model[1], 'See valid itemsSubscribes (Lovecraft)'
 
   #itemsElements
-  equal view.itemsElements.get(model[0]), itemView.elements.get(model[0]), 'See valid itemsElements (Poe)'
-  equal view.itemsElements.get(model[1]), itemView.elements.get(model[1]), 'See valid itemsElements (Lovecraft)'
+  equal view.itemsElements.length, 2, 'See valid itemsElements length'
+  equal view.itemsElements[0], itemView.elements[0], 'See valid itemsElements (Poe)'
+  equal view.itemsElements[1], itemView.elements[1], 'See valid itemsElements (Lovecraft)'
 
 test 'Model changed, view changed', ->
   window.model = new BindIt.Model { array : [ { name : 'Edgar Poe' }, { name : 'Howard Lovecraft' } ] }
@@ -71,11 +84,11 @@ test 'Model changed, view changed', ->
 test 'Element changed', ->
   window.model = new BindIt.Model { array : [ { name : 'Edgar Poe' }, { name : 'Howard Lovecraft' } ] }
   window.itemView =
-    elements : new BindIt.Hash
+    elements : {}
 
-    create:(model, item)->
+    create:(model, index)->
       element = document.createElement 'div'
-      @elements.add item, element
+      @elements[index] = element
       element
 
     changed:->
@@ -91,18 +104,17 @@ test 'Element changed', ->
   equal view.itemsSubscribes.get(model.array[0]), model.array[0], 'See valid itemsSubscribes (Poe)'
   equal view.itemsSubscribes.get(model.array[1]), model.array[1], 'See valid itemsSubscribes (Lovecraft)'
 
-  equal view.itemsElements.get(model.array[0]), itemView.elements.get(model.array[0]), 'See valid itemsElements (Poe)'
-  equal view.itemsElements.get(model.array[1]), itemView.elements.get(model.array[1]), 'See valid itemsElements (Lovecraft)'
-
+  equal view.itemsElements[0], itemView.elements[0], 'See valid itemsElements (Poe)'
+  equal view.itemsElements[1], itemView.elements[1], 'See valid itemsElements (Lovecraft)'
 
 test 'Array element changed, call itemView changed', ->
   window.model = new BindIt.Model { array : [ { name : 'Edgar Poe' }, { name : 'Howard Lovecraft' } ] }
   window.itemView =
-    elements : new BindIt.Hash
+    elements : {}
 
-    create:(model, item)->
+    create:(model, index)->
       element = document.createElement 'div'
-      @elements.add item, element
+      @elements[index] = element
       element
 
     changed:->
@@ -120,19 +132,19 @@ test 'Array element changed, call itemView changed', ->
   equal view.itemsSubscribes.get(model.array[1]), model.array[1], 'See valid itemsSubscribes (Lovecraft)'
 
   equal view.itemsElements.length, 2, 'See valid itemsElements'
-  equal view.itemsElements.get(model.array[0]), itemView.elements.get(model.array[0]), 'See valid itemsElements (Poe)'
-  equal view.itemsElements.get(model.array[1]), itemView.elements.get(model.array[1]), 'See valid itemsElements (Lovecraft)'
+  equal view.itemsElements[0], itemView.elements[0], 'See valid itemsElements (Poe)'
+  equal view.itemsElements[1], itemView.elements[1], 'See valid itemsElements (Lovecraft)'
 
 test 'Array: element pushed, call create', ->
   window.model = new BindIt.Model { array : [ { name : 'Edgar Poe' }, { name : 'Howard Lovecraft' } ] }
   window.itemView =
-    elements : new BindIt.Hash
+    elements : {}
     args: []
 
-    create:(model, item)->
-      @args.push item
+    create:(model, index)->
+      @args.push index
       element = document.createElement 'div'
-      @elements.add item, element
+      @elements[index] = element
       element
 
   view = createListView 'model:array', 'itemView'
@@ -144,31 +156,32 @@ test 'Array: element pushed, call create', ->
 
   equal view.element.childNodes.length, 3, 'New element was appended'
   equal itemView.args.length, 3, 'Create called'
-  equal itemView.args[2], newValue, 'Create called with valid arguments'
+  equal itemView.args[2], 2, 'Create called with valid arguments'
 
   equal view.itemsSubscribes.length, 3, 'See valid itemsSubscribes (Poe)'
   equal view.itemsSubscribes.get(model.array[0]), model.array[0], 'See valid itemsSubscribes (Poe)'
   equal view.itemsSubscribes.get(model.array[1]), model.array[1], 'See valid itemsSubscribes (Lovecraft)'
   equal view.itemsSubscribes.get(model.array[2]), model.array[2], 'See valid itemsSubscribes (new value)'
 
-  equal view.itemsElements.length, 3, 'See valid itemsElements (Poe)'
-  equal view.itemsElements.get(model.array[0]), itemView.elements.get(model.array[0]), 'See valid itemsElements (Poe)'
-  equal view.itemsElements.get(model.array[1]), itemView.elements.get(model.array[1]), 'See valid itemsElements (Lovecraft)'
-  equal view.itemsElements.get(model.array[2]), itemView.elements.get(model.array[2]), 'See valid itemsElements (Lovecraft)'
+  equal view.itemsElements.length, 3, 'See valid itemsElements'
+  equal view.itemsElements[0], itemView.elements[0], 'See valid itemsElements (Poe)'
+  equal view.itemsElements[1], itemView.elements[1], 'See valid itemsElements (Lovecraft)'
+  equal view.itemsElements[2], itemView.elements[2], 'See valid itemsElements (new object)'
 
 test 'Array: element inserted, call create', ->
   window.model = new BindIt.Model { array : [ { name : 'Edgar Poe' }, { name : 'Howard Lovecraft' } ] }
   window.itemView =
-    args: [],
+    args: []
+    changedArgs: []
 
-    create:(model, item)->
-      @args.push item
+    create:(model, index)->
+      @args.push index
       element = document.createElement 'div'
-      element.item = item
+      element.index = model[index]
       element
 
     changed:->
-      @args = arguments
+      @changedArgs.push arguments
 
   view = createListView 'model:array', 'itemView'
   newValue = new BindIt.Model {}
@@ -178,24 +191,29 @@ test 'Array: element inserted, call create', ->
   model.array.unshift newValue
 
   equal view.element.childNodes.length, 3, 'New element was inserted'
-  equal view.element.childNodes[0].item, newValue, 'New element was inserted with valid index'
+  equal view.element.childNodes[0].index, model.array[0], 'New element was inserted with valid index'
   equal itemView.args.length, 3, 'Create called'
-  equal itemView.args[2], newValue, 'Create called with valid arguments'
+  equal itemView.args[2], 0, 'Create called with valid arguments'
+
+  equal itemView.changedArgs.length, 2, 'Changed call to all elements'
+  deepEqual itemView.changedArgs[0], { 0: view.element.childNodes[1], 1: model.array, 2: 1, 3: false, 4:false }, 'Changed call with valid arguments'
+  deepEqual itemView.changedArgs[1], { 0: view.element.childNodes[2], 1: model.array, 2: 2, 3: false, 4:false }, 'Changed call with valid arguments (2)'
 
 test 'Array: element removed', ->
   window.model = new BindIt.Model { array : [ { name : 'Edgar Poe' }, { name : 'Howard Lovecraft' } ] }
   window.itemView =
     elements : new BindIt.Hash
     args: []
+    changedArgs: []
 
-    create:(model, item)->
+    create:(model, index)->
       element = document.createElement 'div'
-      element.item = item
-      @elements.add item, element
+      element.item = model[index]
+      @elements.add model[index], element
       element
 
     changed:->
-      @args = arguments
+      @changedArgs.push arguments
 
   view = createListView 'model:array', 'itemView'
   expectCall(view, 'apocalyptic').calls 0
@@ -209,16 +227,19 @@ test 'Array: element removed', ->
   equal view.itemsSubscribes.get(model.array[0]), model.array[0], 'See valid itemsSubscribes value'
 
   equal view.itemsElements.length, 1, 'See valid itemsElements'
-  equal view.itemsElements.get(model.array[0]), itemView.elements.get(model.array[0]), 'See valid itemsElements value'
+  equal view.itemsElements[0], itemView.elements.get(model.array[0]), 'See valid itemsElements value'
+
+  equal itemView.changedArgs.length, 1, 'Changed call to all elements'
+  deepEqual itemView.changedArgs[0], { 0: view.element.childNodes[0], 1: model.array, 2: 0, 3: true, 4:false }, 'Changed call to all elements'
 
 test 'Array: length incremented', ->
   window.model = new BindIt.Model { array : [ { name : 'Edgar Poe' }, { name : 'Howard Lovecraft' } ] }
   window.itemView =
     args : []
 
-    create:(model, item)->
+    create:(model, index)->
       element = document.createElement 'div'
-      element.item = item
+      element.item = model[index]
       @args.push arguments
       element
 
@@ -232,10 +253,10 @@ test 'Array: length incremented', ->
 
   equal itemView.args.length, 3, 'Create was called'
   equal view.element.childNodes.length, 5, 'Element was append'
-  deepEqual itemView.args[0], { 0 : model.array, 1 : model.array[2], 2 : false, 3 : false }, 'Create was called with valid arguments'
+  deepEqual itemView.args[0], { 0 : model.array, 1 : 2, 2 : false, 3 : false }, 'Create was called with valid arguments'
 
   equal view.itemsSubscribes.length, 2, 'See valid itemsSubscribes'
-  equal view.itemsElements.length, 2, 'See valid itemsElements'
+  equal view.itemsElements.length, 5, 'See valid itemsElements'
 
 test 'Array: length decrement', ->
   window.model = new BindIt.Model { array : [ { name : 'Edgar Poe' }, { name : 'Howard Lovecraft' } ] }
@@ -342,6 +363,29 @@ test 'Array: selectedItems changed (remove value)', ->
 
   model.array.selectedItems.shift()
   deepEqual itemView.args[0], { 0: itemView.elements[1], 1 : model.array, 2 : 1, 3 : false, 4 : false }, 'Call changed with valid arguments'
+
+test 'Array: selectedItems changed (field)', ->
+  window.model = new BindIt.Model { array : [ { name : 'Edgar Poe' }, { name : 'Howard Lovecraft' }, { name : 'William Gibson' } ] }
+  window.model.array.selectedItems.push 1
+  window.itemView =
+    elements: []
+    args: []
+
+    create: ->
+      element = document.createElement 'div'
+      @elements.push element
+      element
+
+    changed:-> @args.push arguments
+
+  view = createListView 'model:array', 'itemView'
+
+  expectCall(view, 'apocalyptic').calls 0
+  expectCall(itemView, 'changed').calls 2
+
+  model.array.selectedItems[0] = 0
+  deepEqual itemView.args[0], { 0: itemView.elements[1], 1 : model.array, 2 : 1, 3 : false, 4 : false }, 'Call changed with valid arguments (old value)'
+  deepEqual itemView.args[1], { 0: itemView.elements[0], 1 : model.array, 2 : 0, 3 : true, 4 : true }, 'Call changed with valid arguments (new value)'
 
 test 'Array: selectedItems changed (apocalyptic changes)', ->
   window.model = new BindIt.Model { array : [ { name : 'Edgar Poe' }, { name : 'Howard Lovecraft' }, { name : 'William Gibson' } ] }

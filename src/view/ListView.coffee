@@ -4,8 +4,9 @@ class ListView extends BindIt.View
     @calculateItemView()
     return if !@itemView?
 
+    @itemView.init? @
     @itemsSubscribes = new BindIt.Hash
-    @itemsElements = new BindIt.Hash
+    @itemsElements = []
     @changed()
 
   changed:(view, model, event) ->
@@ -22,7 +23,8 @@ class ListView extends BindIt.View
     viewValue = @getValue true
 
     item = @itemsSubscribes.get(model)
-    itemElement = @itemsElements.get(item)
+    index = viewValue.indexOf(item) if arrayEvent != BindIt.Model.ArrayEvents.INSERTED && arrayEvent != BindIt.Model.ArrayEvents.REMOVED
+    itemElement = @itemsElements[index]
     if item? && itemElement?
       index = viewValue.indexOf item
       return @itemView.changed(itemElement, viewValue, index, viewValue.selectedItem == index, viewValue.selectedItems.indexOf(index) >= 0) if item? && itemElement?
@@ -30,50 +32,59 @@ class ListView extends BindIt.View
     if model == viewValue && event == BindIt.Model.Events.VALUE_CHANGED
       if field == 'length'
         if oldValue < value
-          @element.appendChild(@createItemElement(model, index)) for index in [oldValue..(value - 1)]
+          for index in [oldValue..(value - 1)]
+            @element.appendChild @createItemElement(model, index)
           return
         else
           while @element.childNodes[value]?
             node = @element.childNodes[@element.childNodes.length - 1]
-            @itemsElements.remove @itemsElements.getKeyByValue node
             @element.removeChild node
+          @itemsElements.length = value
           return
 
       if field == 'selectedItem'
-        @itemView.changed(@itemsElements.get(viewValue[oldValue]), viewValue, oldValue, false, viewValue.selectedItems.indexOf(oldValue) >= 0)
-        @itemView.changed(@itemsElements.get(viewValue[value]), viewValue, value, true, viewValue.selectedItems.indexOf(oldValue) >= 0)
+        @itemView.changed(@itemsElements[oldValue], viewValue, oldValue, false, viewValue.selectedItems.indexOf(oldValue) >= 0)
+        @itemView.changed(@itemsElements[value], viewValue, value, true, viewValue.selectedItems.indexOf(oldValue) >= 0)
         return
 
       if field == 'selectedItems'
         diff = []
         diff.push(item) for item in oldValue
         diff.push(item) for item in value
-        @itemView.changed(@itemsElements.get(viewValue[index]), viewValue, index, index == viewValue.selectedItem, viewValue.selectedItems.indexOf(index) >= 0) for index in [0..diff.length-1] if diff.length > 0
+        @itemView.changed(@itemsElements[index], viewValue, index, index == viewValue.selectedItem, viewValue.selectedItems.indexOf(index) >= 0) for index in [0..diff.length-1] if diff.length > 0
         return
 
       if isNumber(field)
         index = parseInt field
-        itemElement = @itemsElements.get(@itemsSubscribes.get(oldValue))
+        itemElement = @itemsElements[index]
         return @itemView.changed(itemElement, viewValue, index, viewValue.selectedItem == index, viewValue.selectedItems.indexOf(index) >= 0) if value? && itemElement?
 
     if model == viewValue.selectedItems
       if arrayEvent == BindIt.Model.ArrayEvents.INSERTED
-        itemElement = @itemsElements.get(viewValue[value])
+        itemElement = @itemsElements[value]
         @itemView.changed(itemElement, viewValue, value, viewValue.selectedItem == value, viewValue.selectedItems.indexOf(value) >= 0)
         return
 
       if arrayEvent == BindIt.Model.ArrayEvents.REMOVED
-        itemElement = @itemsElements.get(viewValue[value])
+        itemElement = @itemsElements[value]
         @itemView.changed(itemElement, viewValue, value, viewValue.selectedItem == value, viewValue.selectedItems.indexOf(value) >= 0)
         return
 
+      if event == BindIt.Model.Events.VALUE_CHANGED
+        if isNumber(field)
+          @itemView.changed(@itemsElements[oldValue], viewValue, oldValue, viewValue.selectedItem == oldValue, viewValue.selectedItems.indexOf(oldValue) >= 0)
+          @itemView.changed(@itemsElements[value], viewValue, value, viewValue.selectedItem == value, viewValue.selectedItems.indexOf(value) >= 0)
+          return
+
     if model == viewValue && arrayEvent == BindIt.Model.ArrayEvents.INSERTED
       element = @createItemElement model, index
+      @itemView.changed(@itemsElements[i], viewValue, i, viewValue.selectedItem == i, viewValue.selectedItems.indexOf(i) >= 0) for i in [(index + 1)..(viewValue.length - 1)] if viewValue.length > index + 1
       return @element.appendChild element if index == model.length - 1
       return @element.insertBefore element, @element.childNodes[index]
 
     if model == viewValue && arrayEvent == BindIt.Model.ArrayEvents.REMOVED
-      @itemsElements.remove value
+      @itemsElements.splice index, 1
+      @itemView.changed(@itemsElements[i], viewValue, i, viewValue.selectedItem == i, viewValue.selectedItems.indexOf(i) >= 0) for i in [(index)..(viewValue.length - 1)] if viewValue.length > index
       return @element.removeChild @element.childNodes[index]
 
     @apocalyptic()
@@ -93,7 +104,7 @@ class ListView extends BindIt.View
 
   apocalyptic:->
     @element.removeChild(@element.firstChild) while @element.firstChild?
-    @itemsElements.clear()
+    @itemsElements = []
 
     value = @getValue true
     return if !value?
@@ -103,9 +114,8 @@ class ListView extends BindIt.View
     @element.appendChild fragment
 
   createItemElement: (value, index)->
-    item = value[index]
-    element = @itemView.create value, item, value.selectedItem == index, value.selectedItems.indexOf(index) >= 0
-    @itemsElements.add(item, element) if item?
+    element = @itemView.create value, index, value.selectedItem == index, value.selectedItems.indexOf(index) >= 0
+    @itemsElements.splice(index, 0, element)
     element
 
   refreshItemsSubscribes:->
