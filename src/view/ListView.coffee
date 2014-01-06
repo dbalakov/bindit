@@ -4,6 +4,7 @@ class ListView extends BindIt.View
     @calculateItemView()
     return if !@itemView?
 
+    @itemView.init? @
     @itemsSubscribes = new BindIt.Hash
     @itemsElements = []
     @changed()

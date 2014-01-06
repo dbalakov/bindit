@@ -1,11 +1,24 @@
 class SelectItemView
-  create:(model, index, selected)->
-    option = document.createElement 'option'
-    option.innerHTML = model[index]
-    option.setAttribute 'value', index
-    option
+  init:(view)->
+    view.element.onchange = ->
+      model = view.getValue(true)
+      return if !model?
+      model.selectedItem = parseInt view.element.value
 
-  changed:(model, item, selected)->
+  create:(model, index, selected)->
+    element = document.createElement 'option'
+    element.innerHTML = model[index]
+    element.setAttribute 'value', index
+    @setSelected element, model, index, selected
+    element
+
+  changed:(element, model, index, selected)->
+    element.innerHTML = model[index]
+    @setSelected element, model, index, selected
+
+  setSelected:(element, model, index, selected)->
+    return element.setAttribute 'selected', '' if selected
+    element.removeAttribute 'selected'
 
 SelectItemView.instance = new SelectItemView
 
@@ -14,8 +27,8 @@ class Select extends BindIt.View.List
     super @element
 
   calculateItemView:->
-    SelectItemView.instance
+    @itemView = SelectItemView.instance
 
+Select.ItemView = SelectItemView
 BindIt.View.Select = Select
-
 BindIt.View.Default.select = Select

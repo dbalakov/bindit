@@ -10,6 +10,18 @@ test 'Constructor: element with null item-view, constructor call logger', ->
   window.ghostItemView = null
   expectLogger 'warn', ()-> createListView 'model', 'ghostItemView'
 
+test 'Constructor: call init', ->
+  window.model = new BindIt.Model [ { name : 'Edgar Poe' }, { name : 'Howard Lovecraft' } ]
+  window.itemView = {
+    init:(->)
+    create:(->
+      document.createElement 'div'
+    )
+  }
+
+  expectCall(itemView, 'init').calls(1)
+  view = createListView 'model', 'itemView'
+
 test 'Constructor: create elements', ->
   window.model = new BindIt.Model [ { name : 'Edgar Poe' }, { name : 'Howard Lovecraft' } ]
   window.itemView = {
