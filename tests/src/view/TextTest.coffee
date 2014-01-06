@@ -52,6 +52,18 @@ test 'Default view', ()->
 
   ok new BindIt.View.Input(createElement('input', null, 'text')) instanceof BindIt.View.Text, 'InputView constructor returns instance of TextView if type is "text"'
   ok new BindIt.View.Input(createElement('input', null, 'password')) instanceof BindIt.View.Text, 'InputView constructor returns instance of TextView if type is "password"'
+  ok new BindIt.View.Input(createElement('input', null, 'hidden')) instanceof BindIt.View.Text, 'InputView constructor returns instance of TextView if type is "password"'
+  ok new BindIt.View.Input(createElement('input', null, 'email')) instanceof BindIt.View.Text, 'InputView constructor returns instance of TextView if type is "password"'
+  ok new BindIt.View.Input(createElement('input', null, 'search')) instanceof BindIt.View.Text, 'InputView constructor returns instance of TextView if type is "password"'
+  ok new BindIt.View.Input(createElement('input', null, 'tel')) instanceof BindIt.View.Text, 'InputView constructor returns instance of TextView if type is "password"'
+  ok new BindIt.View.Input(createElement('input', null, 'color')) instanceof BindIt.View.Text, 'InputView constructor returns instance of TextView if type is "password"'
+  ok new BindIt.View.Input(createElement('input', null, 'range')) instanceof BindIt.View.Text, 'InputView constructor returns instance of TextView if type is "password"'
+  ok new BindIt.View.Input(createElement('input', null, 'number')) instanceof BindIt.View.Text, 'InputView constructor returns instance of TextView if type is "password"'
+  ok new BindIt.View.Input(createElement('input', null, 'url')) instanceof BindIt.View.Text, 'InputView constructor returns instance of TextView if type is "password"'
+  ok new BindIt.View.Input(createElement('input', null, 'time')) instanceof BindIt.View.Text, 'InputView constructor returns instance of TextView if type is "password"'
+  ok new BindIt.View.Input(createElement('input', null, 'month')) instanceof BindIt.View.Text, 'InputView constructor returns instance of TextView if type is "password"'
+  ok new BindIt.View.Input(createElement('input', null, 'week')) instanceof BindIt.View.Text, 'InputView constructor returns instance of TextView if type is "password"'
+  ok new BindIt.View.Input(createElement('input', null, 'date')) instanceof BindIt.View.Text, 'InputView constructor returns instance of TextView if type is "password"'
 
 checkElementEvent = (eventType, view, tag)->
   window.model = new BindIt.Model { text : 'text' }
