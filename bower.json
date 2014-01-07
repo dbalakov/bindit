@@ -1,5 +1,5 @@
 {
-  "name": "binditjs",
+  "name": "bindit",
   "version": "0.3.0",
   "dependencies": {
     "qunit": "~1.12.0"

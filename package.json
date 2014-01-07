@@ -1,5 +1,5 @@
 {
-  "name": "binditjs",
+  "name": "bindit",
   "version": "0.3.0",
   "description": "MVVM framework",
   "dependencies": {
