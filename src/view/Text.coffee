@@ -3,8 +3,11 @@ class TextView extends BindIt.View
     super @element
     @changed()
 
+    @calculateEvent 'enter'
+    @calculateEvent 'esc'
+
     @element.onchange = @elementListener
-    @element.onkeyup  = @elementListener
+    @element.onkeyup  = @keyup
     @element.onpaste  = @elementListener
 
   changed: ->
@@ -19,8 +22,24 @@ class TextView extends BindIt.View
     value = value or ''
     @element.value = value if @element.value != value
 
+  keyup:(event)=>
+    @elementListener()
+
+    @enter?(event) if event.keyCode == 13
+    @esc?(event) if event.keyCode == 27
+
   elementListener:=>
     @setValue(@element.value) if @element.value != @getValue()
+
+  calculateEvent:(name)=>
+    return if !@element.hasAttribute(name)
+    path = @element.getAttribute(name)
+    index = path.lastIndexOf('.')
+    parentPath = if index < 0 then 'window' else parentPath = path.substr(0, index)
+    try
+      method = eval path
+      parent = eval parentPath
+      @[name] = (event)=> method.apply(parent, [ @, event ]) if method? && method instanceof Function
 
 BindIt.View.Text = TextView
 BindIt.View.Default.textarea = TextView

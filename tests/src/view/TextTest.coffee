@@ -34,6 +34,24 @@ test 'Model changed', ->
   ok passwordView.element.hasAttribute('disabled'), 'Model is null, element disabled (input password)'
   ok textAreaView.element.hasAttribute('disabled'), 'Model is null, element disabled (textarea)'
 
+test 'Events', ->
+  window.model = new BindIt.Model {
+    text : 'text',
+    called:{},
+    enter : -> @called.enter = arguments
+    esc : -> @called.esc = arguments
+    focus : -> @called.focus = arguments
+    focusout : -> @called.focusout = arguments
+  }
+
+  view = createView 'input', 'model:text', 'text', 'model.enter', 'model.esc', 'model.focus', 'model.focusout'
+
+  enterEvent = fireElementEvent view.element, 'keyup', (event)-> event.keyCode = 13
+  escEvent = fireElementEvent view.element, 'keyup', (event)-> event.keyCode = 27
+
+  deepEqual model.called.enter, { 0 : view, 1 : enterEvent }
+  deepEqual model.called.esc, { 0 : view, 1 : escEvent }
+
 test 'Value changed', ->
   checkElementEvent 'change', createView('input', 'model:text', 'text'), 'input text'
   checkElementEvent 'change', createView('input', 'model:text', 'password'), 'input password'
@@ -65,22 +83,31 @@ test 'Default view', ()->
   ok new BindIt.View.Input(createElement('input', null, 'week')) instanceof BindIt.View.Text, 'InputView constructor returns instance of TextView if type is "password"'
   ok new BindIt.View.Input(createElement('input', null, 'date')) instanceof BindIt.View.Text, 'InputView constructor returns instance of TextView if type is "password"'
 
+fireElementEvent = (element, eventType, init)->
+  event = document.createEvent "HTMLEvents"
+  event.initEvent eventType, false, true
+  init?(event)
+  element.dispatchEvent event
+  event
+
 checkElementEvent = (eventType, view, tag)->
   window.model = new BindIt.Model { text : 'text' }
   view.element.value = 'new text'
 
-  event = document.createEvent "HTMLEvents"
-  event.initEvent eventType, false, true
-  view.element.dispatchEvent event
+  fireElementEvent view.element, eventType
 
   equal window.model.text, 'new text', "Value changed, model changed (#{tag}), event: #{eventType}"
 
-createView = (tag, model, type)->
-  element = createElement tag, model, type
+createView = (tag, model, type, enter, esc, focus, focusout)->
+  element = createElement tag, model, type, enter, esc, focus, focusout
   new BindIt.View.Text element
 
-createElement = (tag, model, type)->
+createElement = (tag, model, type, enter, esc, focus, focusout)->
   element = document.createElement tag
   element.setAttribute BindIt.DATA_BIND_ATTRIBUTE, model if model?
   element.setAttribute 'type', type if type?
+  element.setAttribute 'enter', enter if enter?
+  element.setAttribute 'esc', esc if esc?
+  element.setAttribute 'focus', focus if focus?
+  element.setAttribute 'focusout', focusout if focusout?
   element
