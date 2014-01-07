@@ -20,7 +20,7 @@ class CheckboxView extends BindIt.View
 
   setElementEnabled:(enabled)->
     return @element.removeAttribute 'disabled' if enabled
-    @element.setAttribute 'disabled', 'disabled'
+    @element.setAttribute 'disabled', ''
 
 BindIt.View.Checkbox = CheckboxView
 BindIt.View.Input.byType.checkbox = CheckboxView
